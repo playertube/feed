@@ -30,5 +30,13 @@
         "url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
         "miniatura": "https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
         "descricao": "Fácil e delicioso!"
+    },
+    {
+        "id": 5,
+        "titulo": "Receita: Bolo Simples",
+        "categoria": "Culinária",
+        "url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        "miniatura": "https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
+        "descricao": "Fácil e delicioso!"
     }
 ]
