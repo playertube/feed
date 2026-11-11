@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📺 Feed de Vídeos</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #f8fafc; font-family: system-ui, sans-serif; }
+        .category-btn.active { @apply bg-blue-600 text-white; }
+        .video-card:hover { transform: translateY(-2px); }
+        .video-card { transition: all 0.2s ease; }
+        .ad-space { min-height: 90px; background: #f1f5f9; border: 2px dashed #cbd5e1; }
+        iframe { border: none; }
+    </style>
+</head>
+<body class="min-h-screen pb-8">
+    <!-- Cabeçalho -->
+    <header class="bg-slate-900 text-white py-4 px-4 sticky top-0 z-50 shadow">
+        <h1 class="text-xl font-bold text-center">📺 Feed de Vídeos</h1>
+    </header>
+
+    <main class="max-w-2xl mx-auto px-4 py-4">
+        <!-- Espaço de Anúncios -->
+        <div class="ad-space rounded-lg p-4 mb-6 text-center" id="adSection">
+            <p class="text-gray-500 text-sm mb-2">📢 Espaço para Publicidade</p>
+            <!-- === COLOQUE SEU CÓDIGO DE ANÚNCIO AQUI === -->
+            <!-- <script>seu código aqui</script> -->
+            <!-- =========================================== -->
+        </div>
+
+        <!-- Categorias -->
+        <section class="mb-6">
+            <h2 class="text-lg font-semibold mb-3">Categorias</h2>
+            <div id="categories" class="flex flex-wrap gap-2">
+                <button class="category-btn active px-4 py-2 rounded-full bg-gray-200 text-sm font-medium" data-categoria="todos">
+                    Todos
+                </button>
+            </div>
+        </section>
+
+        <!-- Feed de Vídeos -->
+        <section>
+            <h2 class="text-lg font-semibold mb-4">Vídeos Recentes</h2>
+            <div id="videoFeed" class="space-y-6">
+                <div class="text-center py-12 text-gray-500">
+                    <div class="inline-block animate-spin text-3xl mb-3">⏳</div>
+                    <p>Carregando vídeos...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Registrar Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log('✅ PWA pronto!'));
+        }
+
+        let videos = [];
+        let categoriaAtual = 'todos';
+
+        // Elementos
+        const videoFeed = document.getElementById('videoFeed');
+        const categoriesContainer = document.getElementById('categories');
+
+        // Carregar vídeos do JSON
+        async function carregarVideos() {
+            try {
+                const resposta = await fetch('videos.json');
+                videos = await resposta.json();
+                renderizarCategorias();
+                renderizarVideos();
+            } catch (erro) {
+                videoFeed.innerHTML = `
+                    <div class="text-center py-12 text-red-500">
+                        <p class="text-3xl mb-2">⚠️</p>
+                        <p>Não foi possível carregar os vídeos.</p>
+                        <p class="text-sm text-gray-500 mt-2">Verifique se o arquivo videos.json está na pasta.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Extrair e renderizar categorias
+        function renderizarCategorias() {
+            const categoriasUnicas = [...new Set(videos.map(v => v.categoria))].sort();
+            
+            categoriesContainer.innerHTML = `
+                <button class="category-btn active px-4 py-2 rounded-full bg-gray-200 text-sm font-medium" data-categoria="todos">
+                    Todos
+                </button>
+                ${categoriasUnicas.map(cat => `
+                    <button class="category-btn px-4 py-2 rounded-full bg-gray-200 text-sm font-medium" data-categoria="${cat}">
+                        ${cat}
+                    </button>
+                `).join('')}
+            `;
+
+            // Adicionar evento de clique
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active', 'bg-blue-600', 'text-white'));
+                    btn.classList.add('active', 'bg-blue-600', 'text-white');
+                    categoriaAtual = btn.dataset.categoria;
+                    renderizarVideos();
+                });
+            });
+        }
+
+        // Renderizar lista de vídeos
+        function renderizarVideos() {
+            const filtrados = categoriaAtual === 'todos' 
+                ? videos 
+                : videos.filter(v => v.categoria === categoriaAtual);
+
+            if (filtrados.length === 0) {
+                videoFeed.innerHTML = `
+                    <div class="text-center py-12 text-gray-500">
+                        <p class="text-2xl mb-2">📭</p>
+                        <p>Nenhum vídeo encontrado nesta categoria.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            videoFeed.innerHTML = filtrados.map(video => `
+                <div class="video-card bg-white rounded-xl shadow-md overflow-hidden">
+                    <!-- Miniatura clicável -->
+                    <div class="relative cursor-pointer" onclick="abrirVideo('${video.url}', ${video.id})">
+                        <img src="${video.miniatura}" alt="${video.titulo}" 
+                            class="w-full h-48 object-cover">
+                        <div class="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/50 transition-colors">
+                            <span class="text-white text-5xl">▶</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1">${video.titulo}</h3>
+                        <p class="text-gray-500 text-sm mb-2">${video.descricao}</p>
+                        <span class="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">
+                            ${video.categoria}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Abrir vídeo (substitui miniatura pelo player)
+        function abrirVideo(url, id) {
+            const card = document.querySelector(`[onclick*="${id}"]`).parentElement;
+            card.innerHTML = `
+                <iframe src="${url}?autoplay=1" 
+                    class="w-full h-48"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+            `;
+        }
+
+        // Iniciar
+        carregarVideos();
+    </script>
+</body>
+</html>
