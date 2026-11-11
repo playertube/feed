@@ -3,40 +3,32 @@
         "id": 1,
         "titulo": "Como criar um site em 5 minutos",
         "categoria": "Tutoriais",
-        "url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        "miniatura": "https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
+        "url": "https://seu-site.com/videos/video1.mp4",
+        "miniatura": "https://seu-site.com/imagens/capa1.jpg",
         "descricao": "Aprenda de forma simples e rápida"
     },
     {
         "id": 2,
         "titulo": "Dicas de Produtividade",
         "categoria": "Dicas",
-        "url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        "miniatura": "https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
+        "url": "https://seu-site.com/videos/video2.mp4",
+        "miniatura": "https://seu-site.com/imagens/capa2.jpg",
         "descricao": "Seja mais produtivo no dia a dia"
     },
     {
         "id": 3,
         "titulo": "Notícias de Tecnologia",
         "categoria": "Notícias",
-        "url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        "miniatura": "https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
+        "url": "https://seu-site.com/videos/video3.mp4",
+        "miniatura": "https://seu-site.com/imagens/capa3.jpg",
         "descricao": "As novidades que você precisa saber"
     },
     {
         "id": 4,
         "titulo": "Receita: Bolo Simples",
         "categoria": "Culinária",
-        "url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        "miniatura": "https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
-        "descricao": "Fácil e delicioso!"
-    },
-    {
-        "id": 5,
-        "titulo": "Receita: Bolo Simples",
-        "categoria": "Culinária",
-        "url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        "miniatura": "https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
+        "url": "https://seu-site.com/videos/video4.mp4",
+        "miniatura": "https://seu-site.com/imagens/capa4.jpg",
         "descricao": "Fácil e delicioso!"
     }
 ]
