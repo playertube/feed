@@ -14,7 +14,7 @@
         .video-card:hover { transform: translateY(-2px); }
         .video-card { transition: all 0.2s ease; }
         .ad-space { min-height: 90px; background: #f1f5f9; border: 2px dashed #cbd5e1; }
-        iframe { border: none; }
+        video { width: 100%; height: auto; background: #000; }
     </style>
 </head>
 <body class="min-h-screen pb-8">
@@ -101,7 +101,6 @@
                 `).join('')}
             `;
 
-            // Adicionar evento de clique
             document.querySelectorAll('.category-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active', 'bg-blue-600', 'text-white'));
@@ -112,7 +111,7 @@
             });
         }
 
-        // Renderizar lista de vídeos
+        // Renderizar lista de vídeos com MP4
         function renderizarVideos() {
             const filtrados = categoriaAtual === 'todos' 
                 ? videos 
@@ -130,35 +129,25 @@
 
             videoFeed.innerHTML = filtrados.map(video => `
                 <div class="video-card bg-white rounded-xl shadow-md overflow-hidden">
-                    <!-- Miniatura clicável -->
-                    <div class="relative cursor-pointer" onclick="abrirVideo('${video.url}', ${video.id})">
-                        <img src="${video.miniatura}" alt="${video.titulo}" 
-                            class="w-full h-48 object-cover">
-                        <div class="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/50 transition-colors">
-                            <span class="text-white text-5xl">▶</span>
-                        </div>
-                    </div>
+                    <!-- Player de Vídeo MP4 -->
+                    <video 
+                        src="${video.url}"
+                        poster="${video.miniatura || ''}"
+                        controls
+                        preload="metadata"
+                        playsinline
+                        class="w-full">
+                        Seu navegador não suporta reprodução de vídeo.
+                    </video>
                     <div class="p-4">
                         <h3 class="font-bold text-lg mb-1">${video.titulo}</h3>
-                        <p class="text-gray-500 text-sm mb-2">${video.descricao}</p>
+                        <p class="text-gray-500 text-sm mb-3">${video.descricao || ''}</p>
                         <span class="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">
                             ${video.categoria}
                         </span>
                     </div>
                 </div>
             `).join('');
-        }
-
-        // Abrir vídeo (substitui miniatura pelo player)
-        function abrirVideo(url, id) {
-            const card = document.querySelector(`[onclick*="${id}"]`).parentElement;
-            card.innerHTML = `
-                <iframe src="${url}?autoplay=1" 
-                    class="w-full h-48"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen>
-                </iframe>
-            `;
         }
 
         // Iniciar
